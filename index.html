@@ -15,8 +15,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+  <div id="auth-container" class="auth-page">
+  <div class="auth-card">
+    <h2 style="font-family: var(--font-display); margin-bottom: 20px;">Connexion</h2>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="auth-email" placeholder="votre@email.com" />
+    </div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input type="password" id="auth-password" placeholder="••••••••" />
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <button class="btn-primary" onclick="handleSignUp()">S'inscrire</button>
+      <button class="btn-secondary" onclick="handleSignIn()">Se connecter</button>
+    </div>
+  </div>
+</div>
 
 <!-- ─── SPLASH ─────────────────────────────────────────────────────────────── -->
 <div id="splash">
