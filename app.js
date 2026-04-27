@@ -4,20 +4,74 @@
 
 'use strict';
 
-// ─── STORAGE ─────────────────────────────────────────────────────────────────
-const DB_KEY = 'patrimoine_v1';
+// ─── CONFIGURATION SUPABASE ─────────────────────────────────────────────────
+const SUPABASE_URL = 'https://lkhjnurfmimxzgnrwpic.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Votre clé complète
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(DB_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return null;
+let state = null;
+let userSession = null;
+
+// ─── AUTHENTIFICATION ────────────────────────────────────────────────────────
+async function handleSignUp() {
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) return alert(error.message);
+  alert("Vérifiez vos emails pour confirmer l'inscription !");
 }
 
-function saveData() {
-  localStorage.setItem(DB_KEY, JSON.stringify(state));
+async function handleSignIn() {
+  const email = document.getElementById('auth-email').value;
+  const password = document.getElementById('auth-password').value;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) return alert(error.message);
+  checkUser();
 }
+
+// Vérifie si l'utilisateur est connecté au démarrage
+async function checkUser() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    userSession = session;
+    document.getElementById('auth-container').classList.add('hidden');
+    await loadDataFromSupabase();
+    init(); // Démarre l'app
+  }
+}
+
+// ─── SYNCHRONISATION DES DONNÉES ─────────────────────────────────────────────
+async function loadDataFromSupabase() {
+  const { data, error } = await supabase
+    .from('user_data')
+    .select('content')
+    .eq('user_id', userSession.user.id)
+    .single();
+
+  if (data) {
+    state = data.content;
+  } else {
+    state = defaultState(); // Premier démarrage
+    await saveData();
+  }
+}
+
+async function saveData() {
+  if (!userSession) return;
+  
+  const { error } = await supabase
+    .from('user_data')
+    .upsert({ 
+      user_id: userSession.user.id, 
+      content: state,
+      updated_at: new Date() 
+    });
+    
+  if (error) console.error("Erreur de sauvegarde:", error);
+}
+
+// Appelez checkUser() au chargement de la page à la place de l'init direct
+window.addEventListener('load', checkUser);
 
 // ─── DEFAULT STATE ────────────────────────────────────────────────────────────
 const DEFAULT_CATEGORIES = [
