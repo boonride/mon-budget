@@ -4,44 +4,44 @@
 
 'use strict';
 
-// 1. Vos identifiants
+// 1. Identifiants
 const SUPABASE_URL = 'https://lkhjnurfmimxzgnrwpic.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxraGpudXJmbWlteHpnbnJ3cGljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzk0NjIsImV4cCI6MjA5Mjg1NTQ2Mn0.vkdhgGfjVwGnOd8C1zGxaX9A4AGFN3Q6TQ0YqPibO4w';
-
-// 2. Initialisation du client
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let state = null;
 let userSession = null;
 
-// 3. Fonctions attachées à la fenêtre pour que les boutons HTML les voient
+// 2. Fonctions visibles pour les boutons HTML
 window.handleSignUp = async function() {
-  const email = document.getElementById('auth-email').value;
-  const password = document.getElementById('auth-password').value;
-  
-  if (!email || !password) return alert("Remplissez tous les champs");
+    console.log("Tentative d'inscription..."); // Pour vérifier dans la console
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
 
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
-  
-  if (error) {
-    alert("Erreur d'inscription : " + error.message);
-  } else {
-    alert("Succès ! Vérifiez votre boîte mail pour confirmer l'inscription.");
-  }
+    if (!email || !password) return alert("Veuillez remplir les deux champs.");
+
+    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+    if (error) {
+        alert("Erreur : " + error.message);
+    } else {
+        alert("Inscription réussie ! Vérifiez vos emails pour confirmer.");
+    }
 };
 
 window.handleSignIn = async function() {
-  const email = document.getElementById('auth-email').value;
-  const password = document.getElementById('auth-password').value;
+    console.log("Tentative de connexion...");
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
-  if (error) {
-    alert("Erreur de connexion : " + error.message);
-  } else {
-    console.log("Connecté !");
-    checkUser(); // On recharge l'app
-  }
+    if (error) {
+        alert("Erreur : " + error.message);
+    } else {
+        // Si ça marche, on relance la vérification de session
+        checkUser();
+    }
 };
 
 async function checkUser() {
@@ -54,7 +54,7 @@ async function checkUser() {
   }
 }
 
-// 4. Lancement au chargement de la page
+// 3. Lancement au chargement de la page
 window.addEventListener('DOMContentLoaded', checkUser);
 
 // ─── DEFAULT STATE ────────────────────────────────────────────────────────────
