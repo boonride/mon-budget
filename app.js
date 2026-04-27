@@ -6,7 +6,7 @@
 
 // ─── CONFIGURATION SUPABASE ─────────────────────────────────────────────────
 const SUPABASE_URL = 'https://lkhjnurfmimxzgnrwpic.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Votre clé complète
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxraGpudXJmbWlteHpnbnJ3cGljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzk0NjIsImV4cCI6MjA5Mjg1NTQ2Mn0.vkdhgGfjVwGnOd8C1zGxaX9A4AGFN3Q6TQ0YqPibO4w';
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let state = null;
@@ -67,8 +67,9 @@ async function saveData() {
       updated_at: new Date() 
     });
     
-  if (error) console.error("Erreur de sauvegarde:", error);
-}
+ if (error) {
+    console.error("Erreur de sauvegarde sur le serveur:", error);
+  }
 
 // Appelez checkUser() au chargement de la page à la place de l'init direct
 window.addEventListener('load', checkUser);
